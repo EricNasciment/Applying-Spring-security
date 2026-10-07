@@ -1,4 +1,4 @@
-package com.ericnascimet.security;
+package com.ericnascimet.security.repositories;
 
 import com.ericnascimet.security.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;

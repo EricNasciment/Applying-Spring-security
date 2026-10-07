@@ -30,7 +30,7 @@ public class User implements UserDetails {
     }
 
     public User(String name,String email, String password) {
-        this.name = name;
+
         this.name = name;
         this.email = email;
         this.password = password;
@@ -46,7 +46,7 @@ public class User implements UserDetails {
 
     @Override
     public @Nullable String getPassword() {
-        return "";
+        return password;
     }
 
     @Override

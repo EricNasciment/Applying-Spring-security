@@ -9,6 +9,11 @@ import com.ericnascimet.security.entities.User;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,21 +22,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/auth")
 public class AuthController {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
-    public AuthController(UserRepository userRepository){
+    public AuthController(UserRepository userRepository,
+                          PasswordEncoder passwordEncoder,
+                          AuthenticationManager authenticationManager)
+    {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request){
+        UsernamePasswordAuthenticationToken userAndPass = new UsernamePasswordAuthenticationToken(request.email(),request.password());
+        Authentication authetication = authenticationManager.authenticate(userAndPass);
         return null;
     }
 
+    @PostMapping(value = "register")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterUserRequest request){
         User user = new User();
          user.setName(request.name());
          user.setEmail(request.email());
-         user.setPassword(request.password());
+         user.setPassword(passwordEncoder.encode(request.password()));
 
          userRepository.save(user);
          return  ResponseEntity.status(HttpStatus.CREATED).body(new RegisterResponse(user.getName(),user.getEmail()));

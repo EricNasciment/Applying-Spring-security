@@ -24,7 +24,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/auth")
-public class AuthController {
+public class    AuthController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

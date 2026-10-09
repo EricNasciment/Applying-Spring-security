@@ -1,16 +1,18 @@
 package com.ericnascimet.security.controller;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/test")
-public class TestController {
+@RequestMapping(value = "/user")
+public class UserController {
 
+
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping
     public String testSecurity() {
-        return "testando a segurança";
+        return "user e admin acessa essa chamada";
     }
 }

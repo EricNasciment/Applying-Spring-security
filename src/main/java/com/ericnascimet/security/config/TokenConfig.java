@@ -25,8 +25,10 @@ public class TokenConfig {
 
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
+
         return JWT.create()
                 .withClaim("userId",user.getId())
+                .withClaim("roles", user.getRoles().stream().map(Enum::name).toList())
                 .withSubject(user.getEmail())
                 .withExpiresAt(Instant.now().plusSeconds(duration))
                 .withIssuedAt(Instant.now())
@@ -40,9 +42,11 @@ public class TokenConfig {
 
                DecodedJWT decode = JWT.require(algorithm).build().verify(token);
 
+
                return Optional.of(JwtUserData.builder()
                        .userId(decode.getClaim("userId").asLong())
                        .email(decode.getSubject())
+                               .role(decode.getClaim("roles").asList(String.class))
                        .build());
 
            }

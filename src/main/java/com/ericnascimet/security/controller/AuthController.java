@@ -1,6 +1,7 @@
 package com.ericnascimet.security.controller;
 
 import com.ericnascimet.security.config.TokenConfig;
+import com.ericnascimet.security.entities.Role;
 import com.ericnascimet.security.repositories.UserRepository;
 import com.ericnascimet.security.dto.request.LoginRequest;
 import com.ericnascimet.security.dto.request.RegisterUserRequest;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -55,6 +58,12 @@ public class AuthController {
          user.setName(request.name());
          user.setEmail(request.email());
          user.setPassword(passwordEncoder.encode(request.password()));
+
+         if(request.role() != null){
+           user.setRoles(Set.of(request.role()));
+         } else{
+             user.setRoles(Set.of(Role.ROLE_USER));
+         }
 
          userRepository.save(user);
          return  ResponseEntity.status(HttpStatus.CREATED).body(new RegisterResponse(user.getName(),user.getEmail()));
